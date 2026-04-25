@@ -3,7 +3,15 @@
     "description": "SDK for building MPS-compliant payment connectors",
     "type": "library",
     "license": "MIT",
-    "version": "0.1.0",
+    "keywords": ["payments", "mps", "moffhub", "connector", "sdk"],
+    "homepage": "https://github.com/Moffhub-Solutions/connector-sdk",
+    "support": {
+        "issues": "https://github.com/Moffhub-Solutions/connector-sdk/issues",
+        "source": "https://github.com/Moffhub-Solutions/connector-sdk"
+    },
+    "authors": [
+        { "name": "Moffhub", "homepage": "https://moffhub.com" }
+    ],
     "require": {
         "php": "^8.3",
         "moffhub/mps-spec": "^0.1",
