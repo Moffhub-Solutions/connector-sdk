@@ -3,9 +3,10 @@
     "description": "SDK for building MPS-compliant payment connectors",
     "type": "library",
     "license": "MIT",
+    "version": "0.1.0",
     "require": {
         "php": "^8.3",
-        "moffhub/mps-spec": "*",
+        "moffhub/mps-spec": "^0.1",
         "guzzlehttp/guzzle": "^7.0"
     },
     "require-dev": {
