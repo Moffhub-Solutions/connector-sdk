@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 namespace Moffhub\ConnectorSdk;
 
 use Moffhub\MpsSpec\Contracts\ServiceConnectorInterface;
@@ -7,9 +9,14 @@ use Moffhub\MpsSpec\Data\HealthStatus;
 
 abstract class BaseServiceConnector implements ServiceConnectorInterface
 {
+    /** @var array<string, mixed> */
     protected array $config = [];
+
     protected bool $initialized = false;
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public function initialize(array $config): void
     {
         $this->config = $config;
@@ -44,6 +51,9 @@ abstract class BaseServiceConnector implements ServiceConnectorInterface
         return $this->config[$key];
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     protected function validateConfig(array $config): void
     {
         $manifest = $this->manifest();

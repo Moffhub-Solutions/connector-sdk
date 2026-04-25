@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Moffhub\ConnectorSdk;
 
-use Moffhub\MpsSpec\Contracts\ConnectorInterface;
 use Moffhub\MpsSpec\Contracts\HasChargeCapability;
 use Moffhub\MpsSpec\Contracts\HasRefundCapability;
 use Moffhub\MpsSpec\Contracts\HasWebhookCapability;
@@ -61,7 +60,7 @@ class SandboxConnector extends BaseConnector implements HasChargeCapability, Has
         $this->ensureInitialized();
 
         $outcome = $this->determineOutcome($request);
-        $vendorRef = 'sandbox-' . uniqid();
+        $vendorRef = 'sandbox-'.uniqid();
 
         // Simulate processing delay
         usleep(rand(100_000, 500_000));
@@ -107,26 +106,38 @@ class SandboxConnector extends BaseConnector implements HasChargeCapability, Has
         $this->ensureInitialized();
 
         return new RefundResponse(
-            vendorRef: 'sandbox-refund-' . uniqid(),
+            vendorRef: 'sandbox-refund-'.uniqid(),
             status: 'completed',
             amount: $amount,
         );
     }
 
+    /**
+     * @param  array<string, string>  $headers
+     */
     public function handleWebhook(array $headers, mixed $body): WebhookResult
     {
         $this->ensureInitialized();
 
         $data = is_string($body) ? json_decode($body, true) : $body;
+        $data = is_array($data) ? $data : [];
+
+        /** @var string $intentId */
+        $intentId = $data['intent_id'] ?? '';
+        /** @var string $vendorRef */
+        $vendorRef = $data['vendor_ref'] ?? 'sandbox-'.uniqid();
+        /** @var string $status */
+        $status = $data['status'] ?? 'completed';
+        /** @var int|string $amount */
+        $amount = $data['amount'] ?? 0;
+        /** @var string $currency */
+        $currency = $data['currency'] ?? 'KES';
 
         return new WebhookResult(
-            intentId: $data['intent_id'] ?? '',
-            vendorRef: $data['vendor_ref'] ?? 'sandbox-' . uniqid(),
-            status: ChargeStatus::from($data['status'] ?? 'completed'),
-            amount: new MoneyAmount(
-                (int) ($data['amount'] ?? 0),
-                $data['currency'] ?? 'KES',
-            ),
+            intentId: $intentId,
+            vendorRef: $vendorRef,
+            status: ChargeStatus::from($status),
+            amount: new MoneyAmount((int) $amount, $currency),
             rawPayload: $data,
         );
     }
@@ -155,6 +166,7 @@ class SandboxConnector extends BaseConnector implements HasChargeCapability, Has
 
         // Default based on config
         $mode = $this->getConfig('mode', 'success');
+
         return match ($mode) {
             'fail' => ChargeStatus::Failed,
             'timeout' => ChargeStatus::Pending,

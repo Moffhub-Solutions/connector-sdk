@@ -12,7 +12,7 @@ class WebhookVerifier
     {
         $computed = hash_hmac('sha256', $payload, $secret);
 
-        if (! hash_equals($computed, $signature)) {
+        if (!hash_equals($computed, $signature)) {
             throw new WebhookVerificationFailedException('HMAC-SHA256 signature verification failed.');
         }
     }
@@ -21,7 +21,7 @@ class WebhookVerifier
     {
         $computed = hash_hmac('sha512', $payload, $secret);
 
-        if (! hash_equals($computed, $signature)) {
+        if (!hash_equals($computed, $signature)) {
             throw new WebhookVerificationFailedException('HMAC-SHA512 signature verification failed.');
         }
     }

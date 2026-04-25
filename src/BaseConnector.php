@@ -9,10 +9,14 @@ use Moffhub\MpsSpec\Data\HealthStatus;
 
 abstract class BaseConnector implements ConnectorInterface
 {
+    /** @var array<string, mixed> */
     protected array $config = [];
 
     protected bool $initialized = false;
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public function initialize(array $config): void
     {
         $this->config = $config;
@@ -28,7 +32,7 @@ abstract class BaseConnector implements ConnectorInterface
 
     protected function ensureInitialized(): void
     {
-        if (! $this->initialized) {
+        if (!$this->initialized) {
             throw new \RuntimeException('Connector has not been initialized. Call initialize() first.');
         }
     }
@@ -40,19 +44,22 @@ abstract class BaseConnector implements ConnectorInterface
 
     protected function requireConfig(string $key): mixed
     {
-        if (! isset($this->config[$key])) {
+        if (!isset($this->config[$key])) {
             throw new \InvalidArgumentException("Required config key [{$key}] is missing.");
         }
 
         return $this->config[$key];
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     protected function validateConfig(array $config): void
     {
         $manifest = $this->manifest();
 
         foreach ($manifest->requiredConfig as $field) {
-            if ($field->required && ! isset($config[$field->key])) {
+            if ($field->required && !isset($config[$field->key])) {
                 throw new \InvalidArgumentException("Required config [{$field->key}] is missing.");
             }
         }

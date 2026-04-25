@@ -17,34 +17,34 @@ use RuntimeException;
 
 final class SandboxConnectorTest extends TestCase
 {
-    public function test_implements_connector_interface(): void
+    public function testImplementsConnectorInterface(): void
     {
-        $connector = new SandboxConnector();
+        $connector = new SandboxConnector;
 
         $this->assertInstanceOf(ConnectorInterface::class, $connector);
         $this->assertInstanceOf(HasChargeCapability::class, $connector);
     }
 
-    public function test_manifest_declares_payment_capability(): void
+    public function testManifestDeclaresPaymentCapability(): void
     {
-        $manifest = (new SandboxConnector())->manifest();
+        $manifest = (new SandboxConnector)->manifest();
 
         $this->assertSame('sandbox', $manifest->connectorId);
         $this->assertContains(Capability::Payment, $manifest->capabilities);
     }
 
-    public function test_create_charge_before_initialize_throws(): void
+    public function testCreateChargeBeforeInitializeThrows(): void
     {
-        $connector = new SandboxConnector();
+        $connector = new SandboxConnector;
 
         $this->expectException(RuntimeException::class);
 
         $connector->createCharge($this->buildRequest('254700000001'));
     }
 
-    public function test_create_charge_with_success_phone_returns_completed(): void
+    public function testCreateChargeWithSuccessPhoneReturnsCompleted(): void
     {
-        $connector = new SandboxConnector();
+        $connector = new SandboxConnector;
         $connector->initialize([]);
 
         $response = $connector->createCharge($this->buildRequest('254700000001'));
@@ -53,9 +53,9 @@ final class SandboxConnectorTest extends TestCase
         $this->assertNotEmpty($response->vendorRef);
     }
 
-    public function test_create_charge_with_failure_phone_returns_failed(): void
+    public function testCreateChargeWithFailurePhoneReturnsFailed(): void
     {
-        $connector = new SandboxConnector();
+        $connector = new SandboxConnector;
         $connector->initialize([]);
 
         $response = $connector->createCharge($this->buildRequest('254700000002'));
@@ -63,9 +63,9 @@ final class SandboxConnectorTest extends TestCase
         $this->assertSame(ChargeStatus::Failed, $response->status);
     }
 
-    public function test_health_check_is_healthy(): void
+    public function testHealthCheckIsHealthy(): void
     {
-        $connector = new SandboxConnector();
+        $connector = new SandboxConnector;
         $connector->initialize([]);
 
         $this->assertSame('healthy', $connector->healthCheck()->status);
@@ -74,7 +74,7 @@ final class SandboxConnectorTest extends TestCase
     private function buildRequest(string $payerIdentifier): ChargeRequest
     {
         return new ChargeRequest(
-            intentId: 'test-' . uniqid(),
+            intentId: 'test-'.uniqid(),
             amount: new MoneyAmount(10000, 'KES'),
             payerIdentifier: $payerIdentifier,
             channel: Channel::StkPush,

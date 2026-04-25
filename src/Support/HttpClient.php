@@ -12,6 +12,9 @@ class HttpClient
 {
     private Client $client;
 
+    /**
+     * @param  array<string, string>  $defaultHeaders
+     */
     public function __construct(
         private readonly string $baseUrl,
         private readonly array $defaultHeaders = [],
@@ -24,23 +27,38 @@ class HttpClient
         ]);
     }
 
+    /**
+     * @param  array<string, mixed>  $query
+     * @return array<string, mixed>
+     */
     public function get(string $uri, array $query = []): array
     {
         return $this->request('GET', $uri, ['query' => $query]);
     }
 
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
     public function post(string $uri, array $data = []): array
     {
         return $this->request('POST', $uri, ['json' => $data]);
     }
 
+    /**
+     * @param  array<string, mixed>  $options
+     * @return array<string, mixed>
+     */
     private function request(string $method, string $uri, array $options = []): array
     {
         try {
             $response = $this->client->request($method, $uri, $options);
             $body = $response->getBody()->getContents();
 
-            return json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+            /** @var array<string, mixed> $decoded */
+            $decoded = json_decode($body, true, 512, JSON_THROW_ON_ERROR);
+
+            return $decoded;
         } catch (GuzzleException $e) {
             throw new ConnectorException("HTTP request failed: {$e->getMessage()}", 0, $e);
         } catch (\JsonException $e) {
