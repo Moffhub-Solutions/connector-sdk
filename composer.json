@@ -1,29 +1,86 @@
 {
     "name": "moffhub/connector-sdk",
-    "description": "SDK for building MPS-compliant payment connectors",
+    "description": "SDK for building MPS-compliant payment and service connectors. Base classes, HTTP client, webhook verification, and a sandbox connector.",
     "type": "library",
     "license": "MIT",
-    "keywords": ["payments", "mps", "moffhub", "connector", "sdk"],
+    "keywords": [
+        "payments",
+        "mps",
+        "moffhub",
+        "connector",
+        "sdk",
+        "payment-gateway",
+        "africa",
+        "kenya"
+    ],
     "homepage": "https://github.com/Moffhub-Solutions/connector-sdk",
     "support": {
         "issues": "https://github.com/Moffhub-Solutions/connector-sdk/issues",
         "source": "https://github.com/Moffhub-Solutions/connector-sdk"
     },
     "authors": [
-        { "name": "Moffhub", "homepage": "https://moffhub.com" }
+        {
+            "name": "Moffat Munene",
+            "email": "moffmu@gmail.com"
+        }
+    ],
+    "contributors": [
+        {
+            "name": "Moffat Munene",
+            "email": "moffmu@gmail.com",
+            "homepage": "https://github.com/MOFFROUGH",
+            "role": "Maintainer"
+        }
     ],
     "require": {
-        "php": "^8.3",
-        "moffhub/mps-spec": "^0.1",
-        "guzzlehttp/guzzle": "^7.0"
+        "php": "^8.4|^8.5",
+        "guzzlehttp/guzzle": "^7.0",
+        "moffhub/mps-spec": "^0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^11.0"
+        "laravel/pint": "^1.27",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5|^12.5",
+        "rector/rector": "^2.0"
     },
     "autoload": {
         "psr-4": {
             "Moffhub\\ConnectorSdk\\": "src/"
         }
     },
-    "minimum-stability": "stable"
+    "autoload-dev": {
+        "psr-4": {
+            "Moffhub\\ConnectorSdk\\Tests\\": "tests/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "check-code": [
+            "@lint",
+            "@phpstan",
+            "@test"
+        ],
+        "lint": [
+            "vendor/bin/pint --test"
+        ],
+        "lint:fix": [
+            "vendor/bin/pint"
+        ],
+        "phpstan": [
+            "vendor/bin/phpstan --memory-limit=512M"
+        ],
+        "rector": [
+            "vendor/bin/rector process --dry-run"
+        ],
+        "rector:fix": [
+            "vendor/bin/rector process"
+        ],
+        "test": [
+            "vendor/bin/phpunit"
+        ]
+    }
 }
